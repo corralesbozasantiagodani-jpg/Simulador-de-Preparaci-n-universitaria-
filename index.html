@@ -1,0 +1,2503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Simulador de Preparación Universitaria</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f5f8;
+    color: #17202a;
+}
+
+header {
+    background: #172b4d;
+    color: white;
+    padding: 22px 18px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 6px;
+    font-size: 27px;
+}
+
+header p {
+    margin: 0;
+    opacity: .9;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 0 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    margin-bottom: 18px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+select,
+button {
+    font: inherit;
+}
+
+select {
+    padding: 11px;
+    border: 1px solid #ccd3dc;
+    border-radius: 8px;
+    background: white;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.primary {
+    background: #1769aa;
+    color: white;
+}
+
+.secondary {
+    background: #e9edf2;
+    color: #17202a;
+}
+
+.danger {
+    background: #b42318;
+    color: white;
+}
+
+button:hover {
+    filter: brightness(.95);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.progress {
+    height: 10px;
+    background: #e5e9ee;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress div {
+    height: 100%;
+    background: #1769aa;
+    width: 0;
+}
+
+.meta {
+    color: #5c6773;
+    font-size: 14px;
+}
+
+.question-number {
+    font-weight: bold;
+    color: #1769aa;
+}
+
+.question {
+    font-size: 20px;
+    line-height: 1.45;
+    margin: 16px 0 22px;
+}
+
+.options {
+    display: grid;
+    gap: 11px;
+}
+
+.option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1px solid #d6dce3;
+    border-radius: 9px;
+    padding: 13px;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.option:hover {
+    background: #f5f8fb;
+}
+
+.option input {
+    margin-top: 4px;
+    transform: scale(1.15);
+}
+
+.letter {
+    font-weight: bold;
+    min-width: 22px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.results {
+    text-align: center;
+}
+
+.score {
+    font-size: 48px;
+    font-weight: bold;
+    color: #1769aa;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.stat {
+    background: #f4f6f8;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 25px;
+}
+
+.review {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.review-item {
+    border-left: 4px solid #d0d6dd;
+    padding: 10px 14px;
+    margin: 10px 0;
+    background: #fafbfc;
+}
+
+.correct {
+    border-left-color: #20834a;
+}
+
+.wrong {
+    border-left-color: #b42318;
+}
+
+.small {
+    font-size: 13px;
+    color: #65707c;
+}
+
+@media(max-width:650px) {
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .question {
+        font-size: 18px;
+    }
+
+    .nav button {
+        flex: 1;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>
+Simulador de Preparación Universitaria
+</h1>
+
+<p>
+Matemática + Redacción · 800 preguntas · opción múltiple A, B, C o D
+</p>
+
+</header>
+
+
+<div class="container">
+
+<!-- PANTALLA PRINCIPAL -->
+
+<section id="home" class="card">
+
+<h2>
+Prepará tu prueba
+</h2>
+
+<p>
+Banco de <strong>800 preguntas</strong> mezcladas.
+Podés elegir cuántas querés resolver.
+La modalidad está pensada para practicar razonamiento
+matemático y comprensión/redacción
+<strong>sin calculadora</strong>.
+</p>
+
+<div class="controls">
+
+<div>
+
+<label for="amount">
+Cantidad de preguntas
+</label>
+
+<select id="amount">
+
+<option value="20">
+20 preguntas
+</option>
+
+<option value="50">
+50 preguntas
+</option>
+
+<option value="100" selected>
+100 preguntas
+</option>
+
+<option value="150">
+150 preguntas
+</option>
+
+<option value="200">
+200 preguntas
+</option>
+
+<option value="300">
+300 preguntas
+</option>
+
+<option value="800">
+800 preguntas
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label for="mode">
+Orden
+</label>
+
+<select id="mode">
+
+<option value="random">
+Aleatorio
+</option>
+
+<option value="balanced">
+Balanceado
+</option>
+
+</select>
+
+</div>
+
+
+<button
+class="primary"
+onclick="startTest()">
+
+Comenzar prueba
+
+</button>
+
+</div>
+
+
+<p class="small">
+
+Las preguntas se mezclan al iniciar cada prueba.
+
+</p>
+
+</section>
+
+
+<!-- EXAMEN -->
+
+<section id="test" class="card hidden">
+
+<div class="topbar">
+
+<div>
+
+<span
+class="question-number"
+id="qnum">
+</span>
+
+<span
+class="meta"
+id="qtype">
+</span>
+
+</div>
+
+<div
+class="meta"
+id="answeredTop">
+</div>
+
+</div>
+
+
+<div class="progress">
+
+<div id="bar"></div>
+
+</div>
+
+
+<div
+id="questionText"
+class="question">
+</div>
+
+
+<div
+id="options"
+class="options">
+</div>
+
+
+<div class="nav">
+
+<button
+class="secondary"
+onclick="prevQuestion()">
+
+← Anterior
+
+</button>
+
+
+<button
+class="primary"
+onclick="nextQuestion()">
+
+Siguiente →
+
+</button>
+
+</div>
+
+
+<div
+style="text-align:center;margin-top:12px">
+
+<button
+class="danger"
+onclick="finishTest()">
+
+Terminar prueba
+
+</button>
+
+</div>
+
+</section>
+
+
+<!-- RESULTADOS -->
+
+<section
+id="results"
+class="card results hidden">
+
+<h2>
+Resultado de la prueba
+</h2>
+
+
+<div
+class="score"
+id="scorePct">
+
+0%
+
+</div>
+
+
+<p id="summary">
+</p>
+
+
+<div class="result-grid">
+
+
+<div class="stat">
+
+<span>
+Contestadas
+</span>
+
+<strong
+id="answered">
+
+0
+
+</strong>
+
+</div>
+
+
+<div class="stat">
+
+<span>
+Correctas
+</span>
+
+<strong
+id="correct">
+
+0
+
+</strong>
+
+</div>
+
+
+<div class="stat">
+
+<span>
+Incorrectas
+</span>
+
+<strong
+id="wrong">
+
+0
+
+</strong>
+
+</div>
+
+
+<div class="stat">
+
+<span>
+Sin contestar
+</span>
+
+<strong
+id="blank">
+
+0
+
+</strong>
+
+</div>
+
+
+<div class="stat">
+
+<span>
+Matemática correctas
+</span>
+
+<strong
+id="mathCorrect">
+
+0
+
+</strong>
+
+</div>
+
+
+<div class="stat">
+
+<span>
+Redacción correctas
+</span>
+
+<strong
+id="verbalCorrect">
+
+0
+
+</strong>
+
+</div>
+
+</div>
+
+
+<button
+class="primary"
+onclick="showReview()">
+
+Ver revisión
+
+</button>
+
+
+<button
+class="secondary"
+onclick="newTest()">
+
+Nueva prueba
+
+</button>
+
+
+<div
+id="review"
+class="review hidden">
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/*
+=========================================================
+SIMULADOR UNIVERSITARIO
+=========================================================
+
+Banco:
+400 Matemática
+400 Redacción
+
+Total:
+800 preguntas
+
+=========================================================
+*/
+
+
+const bank = [];
+
+
+/* ==========================================
+   FUNCIÓN PARA AGREGAR PREGUNTAS
+========================================== */
+
+function add(type, q, opts, ans, exp) {
+
+    bank.push({
+
+        type: type,
+
+        q: q,
+
+        opts: opts,
+
+        ans: ans,
+
+        exp: exp
+
+    });
+
+}
+
+
+/* ==========================================
+   MATEMÁTICA
+========================================== */
+
+function addMathQuestions() {
+
+    for(let i = 1; i <= 400; i++) {
+
+        const tipo = (i - 1) % 20;
+
+        let q;
+        let o;
+        let a;
+        let e;
+
+
+        switch(tipo) {
+
+
+            /* SUMA */
+
+            case 0: {
+
+                const x = (i % 17) + 2;
+
+                const y = (i % 9) + 1;
+
+                const resultado = x + y;
+
+
+                q =
+                `Si x = ${x} y y = ${y}, ¿cuál es el valor de x + y?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${resultado + 1}`,
+
+                    `${resultado - 1}`,
+
+                    `${x * y}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `Se sustituyen los valores: ${x} + ${y} = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* MULTIPLICACIÓN */
+
+            case 1: {
+
+                const x = (i % 12) + 3;
+
+                const y = (i % 7) + 2;
+
+                const resultado = x * y;
+
+
+                q =
+                `¿Cuál es el resultado de ${x} × ${y}?`;
+
+
+                o = [
+
+                    `${resultado + 1}`,
+
+                    `${resultado}`,
+
+                    `${resultado - 1}`,
+
+                    `${x + y}`
+
+                ];
+
+
+                a = 1;
+
+
+                e =
+                `Multiplicando ${x} por ${y} se obtiene ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* RESTA */
+
+            case 2: {
+
+                const x = (i % 15) + 5;
+
+                const y = (i % 8) + 1;
+
+                const numero = x + y;
+
+
+                q =
+                `¿Cuál es el resultado de ${numero} − ${y}?`;
+
+
+                o = [
+
+                    `${x}`,
+
+                    `${x + 1}`,
+
+                    `${x - 1}`,
+
+                    `${y}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `${numero} − ${y} = ${x}.`;
+
+                break;
+
+            }
+
+
+            /* FRACCIONES */
+
+            case 3: {
+
+                const n = (i % 8) + 2;
+
+                const d = (i % 5) + 2;
+
+                const denominador = n * d;
+
+
+                q =
+                `Si ${n}/${denominador} se simplifica, ¿qué fracción resulta?`;
+
+
+                o = [
+
+                    `1/${d}`,
+
+                    `${d}/1`,
+
+                    `1/${n}`,
+
+                    `${n}/${d}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `Se divide numerador y denominador entre ${n}.`;
+
+                break;
+
+            }
+
+
+            /* PORCENTAJES */
+
+            case 4: {
+
+                const n = (i % 15) + 5;
+
+                const total = n * 5;
+
+
+                q =
+                `¿Cuál es el 20% de ${total}?`;
+
+
+                o = [
+
+                    `${n}`,
+
+                    `${n + 5}`,
+
+                    `${n - 5}`,
+
+                    `${total}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `El 20% equivale a 1/5. ${total} ÷ 5 = ${n}.`;
+
+                break;
+
+            }
+
+
+            /* ECUACIONES */
+
+            case 5: {
+
+                const x = (i % 13) + 2;
+
+                const extra = 4;
+
+                const total = x + extra;
+
+
+                q =
+                `Si x + ${extra} = ${total}, ¿cuánto vale x?`;
+
+
+                o = [
+
+                    `${x}`,
+
+                    `${x + 1}`,
+
+                    `${x - 1}`,
+
+                    `${total}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `x = ${total} − ${extra} = ${x}.`;
+
+                break;
+
+            }
+
+
+            /* PERÍMETRO */
+
+            case 6: {
+
+                const base = (i % 10) + 2;
+
+                const altura = (i % 6) + 1;
+
+                const resultado =
+                2 * (base + altura);
+
+
+                q =
+                `¿Cuál es el perímetro de un rectángulo de lados ${base} y ${altura}?`;
+
+
+                o = [
+
+                    `${base + altura}`,
+
+                    `${resultado}`,
+
+                    `${base * altura}`,
+
+                    `${resultado + 2}`
+
+                ];
+
+
+                a = 1;
+
+
+                e =
+                `P = 2(base + altura) = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* ÁREA RECTÁNGULO */
+
+            case 7: {
+
+                const base = (i % 10) + 2;
+
+                const altura = (i % 9) + 2;
+
+                const resultado =
+                base * altura;
+
+
+                q =
+                `¿Cuál es el área de un rectángulo de ${base} unidades por ${altura} unidades?`;
+
+
+                o = [
+
+                    `${base + altura}`,
+
+                    `${resultado}`,
+
+                    `${resultado * 2}`,
+
+                    `${resultado - 1}`
+
+                ];
+
+
+                a = 1;
+
+
+                e =
+                `Área = base × altura = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* CUADRADO */
+
+            case 8: {
+
+                const lado = (i % 8) + 2;
+
+                const resultado = lado * lado;
+
+
+                q =
+                `¿Cuál es el área de un cuadrado cuyo lado mide ${lado}?`;
+
+
+                o = [
+
+                    `${lado * 2}`,
+
+                    `${lado + 4}`,
+
+                    `${resultado}`,
+
+                    `${resultado + lado}`
+
+                ];
+
+
+                a = 2;
+
+
+                e =
+                `Área = lado² = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* PROBLEMA */
+
+            case 9: {
+
+                const numero = (i % 20) + 10;
+
+                const mayor = (i % 5) + 2;
+
+                const segundo = numero + mayor;
+
+                const resultado =
+                numero + segundo;
+
+
+                q =
+                `Un número es ${numero} y otro es ${mayor} mayor. ¿Cuál es la suma de ambos?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${resultado + 1}`,
+
+                    `${resultado - 1}`,
+
+                    `${numero + mayor}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `El segundo número es ${segundo}; ${numero} + ${segundo} = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* RAÍZ */
+
+            case 10: {
+
+                const n = (i % 6) + 2;
+
+                const resultado = n * n;
+
+
+                q =
+                `¿Cuál es la raíz cuadrada de ${resultado}?`;
+
+
+                o = [
+
+                    `${n - 1}`,
+
+                    `${n}`,
+
+                    `${n + 1}`,
+
+                    `${resultado / 2}`
+
+                ];
+
+
+                a = 1;
+
+
+                e =
+                `Porque ${n} × ${n} = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* POTENCIAS */
+
+            case 11: {
+
+                const n = (i % 9) + 2;
+
+                const resultado = n * n;
+
+
+                q =
+                `¿Cuál de las siguientes expresiones es equivalente a ${resultado}?`;
+
+
+                o = [
+
+                    `${n} + ${n}`,
+
+                    `${n} × ${n}`,
+
+                    `${n} + 1`,
+
+                    `2 × ${n}`
+
+                ];
+
+
+                a = 1;
+
+
+                e =
+                `${n} × ${n} = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* SECUENCIAS */
+
+            case 12: {
+
+                const inicio = (i % 7) + 2;
+
+                const salto = (i % 5) + 2;
+
+                const resultado =
+                inicio + salto * 3;
+
+
+                q =
+                `Una secuencia inicia ${inicio}, ${inicio + salto}, ${inicio + salto * 2}. ¿Cuál es el siguiente término?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${resultado + salto}`,
+
+                    `${resultado - 1}`,
+
+                    `${inicio + salto * 4}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `La secuencia aumenta de ${salto} en ${salto}.`;
+
+                break;
+
+            }
+
+
+            /* FRACCIONES */
+
+            case 13: {
+
+                const total = (i % 8) + 3;
+
+                const parte = (i % total) + 1;
+
+
+                q =
+                `De ${total} partes iguales, si se toman ${parte}, ¿qué fracción representa lo tomado?`;
+
+
+                o = [
+
+                    `${parte}/${total}`,
+
+                    `${total - parte}/${total}`,
+
+                    `${total}/${parte}`,
+
+                    `1/${total}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `Se tomaron ${parte} partes de un total de ${total}.`;
+
+                break;
+
+            }
+
+
+            /* RESTA VARIABLES */
+
+            case 14: {
+
+                const a1 = (i % 9) + 3;
+
+                const b1 = (i % 5) + 1;
+
+                const resultado = a1 - b1;
+
+
+                q =
+                `Si a = ${a1} y b = ${b1}, ¿cuánto vale a − b?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${resultado + 1}`,
+
+                    `${a1 + b1}`,
+
+                    `${b1 - a1}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `${a1} − ${b1} = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* ECUACIÓN */
+
+            case 15: {
+
+                const x = (i % 9) + 2;
+
+                const total = 3 * x;
+
+
+                q =
+                `Si 3x = ${total}, ¿cuál es el valor de x?`;
+
+
+                o = [
+
+                    `${x}`,
+
+                    `${x + 1}`,
+
+                    `${total}`,
+
+                    `${x - 1}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `Se divide entre 3: x = ${x}.`;
+
+                break;
+
+            }
+
+
+            /* PROMEDIO */
+
+            case 16: {
+
+                const n = (i % 9) + 2;
+
+                const resultado = n + 2;
+
+
+                q =
+                `¿Cuál es el promedio de ${n}, ${n + 2} y ${n + 4}?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${resultado + 1}`,
+
+                    `${resultado - 1}`,
+
+                    `${n + 4}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `La suma se divide entre 3 y da ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* DESCUENTO */
+
+            case 17: {
+
+                const n = (i % 12) + 3;
+
+                const precio = n * 10;
+
+                const final = n * 8;
+
+
+                q =
+                `Un artículo cuesta ${precio} unidades y recibe un descuento del 20%. ¿Cuál es el precio final?`;
+
+
+                o = [
+
+                    `${n * 9}`,
+
+                    `${final}`,
+
+                    `${n * 7}`,
+
+                    `${precio}`
+
+                ];
+
+
+                a = 1;
+
+
+                e =
+                `El 20% de ${precio} es ${n * 2}. Precio final: ${final}.`;
+
+                break;
+
+            }
+
+
+            /* SUMA NATURALES */
+
+            case 18: {
+
+                const n = (i % 7) + 2;
+
+                const resultado =
+                n * (n + 1) / 2;
+
+
+                q =
+                `¿Cuál es la suma de los primeros ${n} números naturales positivos?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${n * n}`,
+
+                    `${resultado + 1}`,
+
+                    `${2 * n}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `1 + 2 + ... + ${n} = ${resultado}.`;
+
+                break;
+
+            }
+
+
+            /* FUNCIÓN */
+
+            case 19: {
+
+                const x = (i % 8) + 2;
+
+                const resultado =
+                2 * x + 3;
+
+
+                q =
+                `Si f(x) = 2x + 3, ¿cuánto vale f(${x})?`;
+
+
+                o = [
+
+                    `${resultado}`,
+
+                    `${resultado + 1}`,
+
+                    `${2 * x}`,
+
+                    `${x + 3}`
+
+                ];
+
+
+                a = 0;
+
+
+                e =
+                `f(${x}) = 2(${x}) + 3 = ${resultado}.`;
+
+                break;
+
+            }
+
+        }
+
+
+        add(
+            "Matemática",
+            q,
+            o,
+            a,
+            e
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   REDACCIÓN
+========================================== */
+
+function addVerbalQuestions() {
+
+    const sets = [
+
+        {
+            q:"Elige la oración escrita de manera más clara y correcta.",
+
+            o:[
+                "Aunque estaba cansado, terminó el trabajo.",
+                "Aunque estaba cansado terminó, el trabajo.",
+                "Aunque estaba cansado terminó el trabajo.",
+                "Aunque, estaba cansado terminó el trabajo."
+            ],
+
+            a:0,
+
+            e:
+            "La coma separa correctamente la proposición introductoria."
+        },
+
+
+        {
+            q:"¿Cuál palabra está escrita correctamente?",
+
+            o:[
+                "excepción",
+                "exepción",
+                "eccepción",
+                "exección"
+            ],
+
+            a:0,
+
+            e:
+            "La forma correcta es «excepción»."
+        },
+
+
+        {
+            q:"¿Cuál opción funciona como sinónimo de «preciso» en el sentido de exacto?",
+
+            o:[
+                "impreciso",
+                "exacto",
+                "lejano",
+                "rápido"
+            ],
+
+            a:1,
+
+            e:
+            "En este contexto, «preciso» significa exacto."
+        },
+
+
+        {
+            q:"¿Cuál es el antónimo de «escaso»?",
+
+            o:[
+                "limitado",
+                "abundante",
+                "pequeño",
+                "mínimo"
+            ],
+
+            a:1,
+
+            e:
+            "Lo contrario de escaso es abundante."
+        },
+
+
+        {
+            q:"Identifica la oración con concordancia correcta.",
+
+            o:[
+                "Las estudiante llegó temprano.",
+                "Los estudiantes llegó temprano.",
+                "Los estudiantes llegaron temprano.",
+                "El estudiantes llegaron temprano."
+            ],
+
+            a:2,
+
+            e:
+            "«Los estudiantes» es plural y requiere «llegaron»."
+        },
+
+
+        {
+            q:"¿Cuál opción utiliza correctamente «porque»?",
+
+            o:[
+                "No fui porque estaba enfermo.",
+                "No fui por qué estaba enfermo.",
+                "No fui porqué estaba enfermo.",
+                "No fui por que estaba enfermo."
+            ],
+
+            a:0,
+
+            e:
+            "«Porque» introduce la causa."
+        },
+
+
+        {
+            q:"¿Cuál palabra completa mejor la oración? «El argumento era sólido; ___, necesitaba más evidencia.»",
+
+            o:[
+                "sin embargo",
+                "por eso",
+                "además",
+                "por tanto"
+            ],
+
+            a:0,
+
+            e:
+            "«Sin embargo» expresa contraste."
+        },
+
+
+        {
+            q:"En la oración «María estudió toda la tarde y aprobó», ¿qué relación expresa «y»?",
+
+            o:[
+                "causa",
+                "oposición",
+                "adición",
+                "condición"
+            ],
+
+            a:2,
+
+            e:
+            "«Y» expresa adición."
+        },
+
+
+        {
+            q:"¿Cuál opción tiene correctamente colocada la tilde?",
+
+            o:[
+                "tambien",
+                "también",
+                "tambièn",
+                "támbien"
+            ],
+
+            a:1,
+
+            e:
+            "«También» lleva tilde."
+        },
+
+
+        {
+            q:"¿Cuál oración evita una repetición innecesaria?",
+
+            o:[
+                "El libro de Juan es un libro interesante.",
+                "Juan tiene un libro que es interesante.",
+                "El libro que Juan tiene es un libro interesante.",
+                "Juan tiene un libro interesante."
+            ],
+
+            a:3,
+
+            e:
+            "La cuarta oración evita la repetición."
+        },
+
+
+        {
+            q:"Lee: «La biblioteca amplió su horario porque muchos estudiantes necesitaban estudiar después de clases». ¿Cuál es la causa?",
+
+            o:[
+                "La biblioteca cerró temprano.",
+                "Muchos estudiantes necesitaban estudiar después de clases.",
+                "Los estudiantes dejaron de estudiar.",
+                "Las clases fueron canceladas."
+            ],
+
+            a:1,
+
+            e:
+            "La expresión «porque» introduce la causa."
+        },
+
+
+        {
+            q:"¿Cuál es una conclusión lógica? «Todos los mamíferos estudiados tienen pulmones. El delfín es un mamífero. Por lo tanto…»",
+
+            o:[
+                "El delfín tiene pulmones.",
+                "El delfín no respira.",
+                "Todos los peces son mamíferos.",
+                "El delfín es un ave."
+            ],
+
+            a:0,
+
+            e:
+            "El delfín pertenece al grupo de los mamíferos."
+        },
+
+
+        {
+            q:"¿Cuál palabra expresa mejor una idea de consecuencia?",
+
+            o:[
+                "aunque",
+                "porque",
+                "por lo tanto",
+                "mientras"
+            ],
+
+            a:2,
+
+            e:
+            "«Por lo tanto» introduce una consecuencia."
+        },
+
+
+        {
+            q:"¿Cuál oración está en voz pasiva?",
+
+            o:[
+                "El estudiante resolvió el problema.",
+                "El problema fue resuelto por el estudiante.",
+                "El estudiante resolverá el problema.",
+                "El estudiante resolvía el problema."
+            ],
+
+            a:1,
+
+            e:
+            "«Fue resuelto por» es una construcción pasiva."
+        },
+
+
+        {
+            q:"¿Cuál opción contiene una comparación?",
+
+            o:[
+                "El examen comenzó temprano.",
+                "Ana estudia tanto como Luis.",
+                "Ana estudia durante la tarde.",
+                "Luis terminó el examen."
+            ],
+
+            a:1,
+
+            e:
+            "«Tanto como» establece comparación."
+        },
+
+
+        {
+            q:"¿Cuál palabra significa «que puede ser realizado»?",
+
+            o:[
+                "imposible",
+                "viable",
+                "incierto",
+                "lejano"
+            ],
+
+            a:1,
+
+            e:
+            "«Viable» significa que puede realizarse."
+        },
+
+
+        {
+            q:"¿Cuál oración presenta una idea de condición?",
+
+            o:[
+                "Iré si termino el trabajo.",
+                "Iré porque terminé el trabajo.",
+                "Iré y terminaré el trabajo.",
+                "Iré aunque no termine."
+            ],
+
+            a:0,
+
+            e:
+            "«Si» introduce una condición."
+        },
+
+
+        {
+            q:"¿Cuál oración tiene un uso correcto de los dos puntos?",
+
+            o:[
+                "Necesito tres cosas: tiempo, lápiz y cuaderno.",
+                "Necesito: tres cosas tiempo, lápiz y cuaderno.",
+                "Necesito tres cosas tiempo: lápiz y cuaderno.",
+                "Necesito tres: cosas tiempo, lápiz y cuaderno."
+            ],
+
+            a:0,
+
+            e:
+            "Los dos puntos introducen la enumeración."
+        },
+
+
+        {
+            q:"¿Cuál es la idea principal? «Dormir bien favorece la concentración, ayuda a consolidar la memoria y mejora el rendimiento durante el día.»",
+
+            o:[
+                "Dormir ocupa muchas horas.",
+                "El sueño puede favorecer varias funciones relacionadas con el rendimiento.",
+                "La memoria no es importante.",
+                "Concentrarse siempre es fácil."
+            ],
+
+            a:1,
+
+            e:
+            "La oración presenta varios beneficios del sueño."
+        },
+
+
+        {
+            q:"¿Cuál palabra está correctamente escrita?",
+
+            o:[
+                "desición",
+                "decisión",
+                "decición",
+                "desisión"
+            ],
+
+            a:1,
+
+            e:
+            "La forma correcta es «decisión»."
+        }
+
+    ];
+
+
+    for(let i = 0; i < 400; i++) {
+
+        const s =
+        sets[i % sets.length];
+
+
+        add(
+
+            "Redacción",
+
+            s.q,
+
+            [...s.o],
+
+            s.a,
+
+            s.e
+
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   CREAR LAS 800 PREGUNTAS
+========================================== */
+
+addMathQuestions();
+
+addVerbalQuestions();
+
+
+/* ==========================================
+   MEZCLAR
+========================================== */
+
+function shuffle(arr) {
+
+    for(
+        let i = arr.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+        Math.floor(
+            Math.random() * (i + 1)
+        );
+
+
+        [
+            arr[i],
+            arr[j]
+        ] =
+        [
+            arr[j],
+            arr[i]
+        ];
+
+    }
+
+    return arr;
+
+}
+
+
+/* ==========================================
+   VARIABLES DEL EXAMEN
+========================================== */
+
+let testQuestions = [];
+
+let answers = [];
+
+let current = 0;
+
+let finished = false;
+
+
+/* ==========================================
+   INICIAR EXAMEN
+========================================== */
+
+function startTest() {
+
+    const amount =
+    Number(
+        document.getElementById("amount").value
+    );
+
+
+    const mode =
+    document.getElementById("mode").value;
+
+
+    let pool = [...bank];
+
+
+    if(mode === "balanced") {
+
+        const math =
+        shuffle(
+            pool.filter(
+                x => x.type === "Matemática"
+            )
+        );
+
+
+        const verbal =
+        shuffle(
+            pool.filter(
+                x => x.type === "Redacción"
+            )
+        );
+
+
+        const half =
+        Math.floor(amount / 2);
+
+
+        testQuestions =
+        shuffle([
+            ...math.slice(0, half),
+
+            ...verbal.slice(
+                0,
+                amount - half
+            )
+        ]);
+
+    }
+
+    else {
+
+        testQuestions =
+        shuffle(pool).slice(
+            0,
+            amount
+        );
+
+    }
+
+
+    answers =
+    new Array(
+        testQuestions.length
+    ).fill(null);
+
+
+    current = 0;
+
+    finished = false;
+
+
+    document
+    .getElementById("home")
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById("results")
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById("test")
+    .classList
+    .remove("hidden");
+
+
+    renderQuestion();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ==========================================
+   MOSTRAR PREGUNTA
+========================================== */
+
+function renderQuestion() {
+
+    const q =
+    testQuestions[current];
+
+
+    document
+    .getElementById("qnum")
+    .textContent =
+    `Pregunta ${current + 1} de ${testQuestions.length} · `;
+
+
+    document
+    .getElementById("qtype")
+    .textContent =
+    q.type;
+
+
+    document
+    .getElementById("questionText")
+    .textContent =
+    q.q;
+
+
+    const box =
+    document.getElementById("options");
+
+
+    box.innerHTML = "";
+
+
+    const labels =
+    ["A","B","C","D"];
+
+
+    q.opts.forEach(
+        (opt, i) => {
+
+            const div =
+            document.createElement("label");
+
+
+            div.className =
+            "option";
+
+
+            div.innerHTML = `
+
+                <input
+                    type="radio"
+                    name="answer"
+                    value="${i}"
+                    ${answers[current] === i ? "checked" : ""}
+                >
+
+                <span class="letter">
+                    ${labels[i]}.
+                </span>
+
+                <span>
+                    ${opt}
+                </span>
+
+            `;
+
+
+            div
+            .querySelector("input")
+            .addEventListener(
+                "change",
+                e => {
+
+                    answers[current] =
+                    Number(
+                        e.target.value
+                    );
+
+                    updateTop();
+
+                }
+            );
+
+
+            box.appendChild(div);
+
+        }
+    );
+
+
+    updateTop();
+
+}
+
+
+/* ==========================================
+   ACTUALIZAR CONTADOR
+========================================== */
+
+function updateTop() {
+
+    const count =
+    answers.filter(
+        x => x !== null
+    ).length;
+
+
+    document
+    .getElementById("answeredTop")
+    .textContent =
+    `Contestadas: ${count}/${testQuestions.length}`;
+
+
+    document
+    .getElementById("bar")
+    .style
+    .width =
+    (
+        (current + 1)
+        /
+        testQuestions.length
+        *
+        100
+    ) + "%";
+
+}
+
+
+/* ==========================================
+   SIGUIENTE
+========================================== */
+
+function nextQuestion() {
+
+    if(
+        current <
+        testQuestions.length - 1
+    ) {
+
+        current++;
+
+        renderQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+    else {
+
+        finishTest();
+
+    }
+
+}
+
+
+/* ==========================================
+   ANTERIOR
+========================================== */
+
+function prevQuestion() {
+
+    if(current > 0) {
+
+        current--;
+
+        renderQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+/* ==========================================
+   TERMINAR
+========================================== */
+
+function finishTest() {
+
+    if(finished)
+        return;
+
+
+    const unanswered =
+    answers.filter(
+        x => x === null
+    ).length;
+
+
+    if(unanswered > 0) {
+
+        const ok =
+        confirm(
+            `Tenés ${unanswered} pregunta(s) sin contestar. ¿Querés terminar de todas formas?`
+        );
+
+
+        if(!ok)
+            return;
+
+    }
+
+
+    finished = true;
+
+    showResults();
+
+}
+
+
+/* ==========================================
+   RESULTADOS
+========================================== */
+
+function showResults() {
+
+    let correct = 0;
+
+    let answered = 0;
+
+    let mathC = 0;
+
+    let verbalC = 0;
+
+
+    testQuestions.forEach(
+        (q, i) => {
+
+            if(
+                answers[i] !== null
+            ) {
+
+                answered++;
+
+
+                if(
+                    answers[i] === q.ans
+                ) {
+
+                    correct++;
+
+
+                    if(
+                        q.type === "Matemática"
+                    )
+
+                        mathC++;
+
+                    else
+
+                        verbalC++;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    const wrong =
+    answered - correct;
+
+
+    const blank =
+    testQuestions.length - answered;
+
+
+    const pct =
+    testQuestions.length
+    ?
+    (
+        correct /
+        testQuestions.length
+        *
+        100
+    )
+    :
+    0;
+
+
+    document
+    .getElementById("scorePct")
+    .textContent =
+    pct.toFixed(1) + "%";
+
+
+    document
+    .getElementById("summary")
+    .textContent =
+    `Contestaste ${answered} de ${testQuestions.length}. Tu resultado es ${correct} correctas de ${testQuestions.length} preguntas.`;
+
+
+    document
+    .getElementById("answered")
+    .textContent =
+    answered;
+
+
+    document
+    .getElementById("correct")
+    .textContent =
+    correct;
+
+
+    document
+    .getElementById("wrong")
+    .textContent =
+    wrong;
+
+
+    document
+    .getElementById("blank")
+    .textContent =
+    blank;
+
+
+    document
+    .getElementById("mathCorrect")
+    .textContent =
+    mathC;
+
+
+    document
+    .getElementById("verbalCorrect")
+    .textContent =
+    verbalC;
+
+
+    document
+    .getElementById("test")
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById("results")
+    .classList
+    .remove("hidden");
+
+
+    document
+    .getElementById("review")
+    .classList
+    .add("hidden");
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ==========================================
+   REVISIÓN
+========================================== */
+
+function showReview() {
+
+    const r =
+    document.getElementById("review");
+
+
+    r.classList.remove("hidden");
+
+
+    r.innerHTML =
+    "<h3>Revisión</h3>";
+
+
+    testQuestions.forEach(
+        (q, i) => {
+
+            const ok =
+            answers[i] === q.ans;
+
+
+            const status =
+            answers[i] === null
+            ?
+            "Sin contestar"
+            :
+            (
+                ok
+                ?
+                "Correcta"
+                :
+                "Incorrecta"
+            );
+
+
+            const user =
+            answers[i] === null
+            ?
+            "—"
+            :
+            String.fromCharCode(
+                65 + answers[i]
+            );
+
+
+            const right =
+            String.fromCharCode(
+                65 + q.ans
+            );
+
+
+            const item =
+            document.createElement(
+                "div"
+            );
+
+
+            item.className =
+            "review-item " +
+            (
+                ok
+                ?
+                "correct"
+                :
+                "wrong"
+            );
+
+
+            item.innerHTML = `
+
+                <strong>
+                    ${i + 1}. ${status}
+                </strong>
+
+                <br>
+
+                ${q.q}
+
+                <br>
+
+                <span class="small">
+
+                    Tu respuesta: ${user}
+
+                    ·
+
+                    Correcta: ${right}
+
+                    <br>
+
+                    ${q.exp}
+
+                </span>
+
+            `;
+
+
+            r.appendChild(item);
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   NUEVA PRUEBA
+========================================== */
+
+function newTest() {
+
+    document
+    .getElementById("results")
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById("home")
+    .classList
+    .remove("hidden");
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+console.log(
+    "Banco cargado:",
+    bank.length,
+    "preguntas."
+);
+
+</script>
+
+</body>
+</html>
